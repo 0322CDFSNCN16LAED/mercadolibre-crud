@@ -15,11 +15,11 @@ app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto: ${PORT}`);
 });
 
-app.use((err, req, res, next) => {
-    res.locals.message = err.message;
-    res.locals.path = req.path;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
-
+app.use((err, req, res) => {
     res.status(err.status || 500);
-    res.render("error");
+    res.render("error", {
+        message: err.message,
+        path: req.path,
+        error: err,
+    });
 });
