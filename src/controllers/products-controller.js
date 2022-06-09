@@ -1,5 +1,10 @@
+const fs = require("fs");
+const path = require("path");
+
 const db = require("../data/db");
 const products = db.getAll();
+
+const productsFilePath = path.join(__dirname, "../data/products-db.json");
 
 const controller = {
     // Root - Show all products
@@ -23,7 +28,22 @@ const controller = {
 
     // Create -  Method to store
     store: (req, res) => {
-        res.send(req.body);
+        const newProduct = req.body;
+        if (products.length) {
+            newProduct.id = products[products.length - 1].id + 1;
+        } else {
+            newProduct.id = 1;
+        }
+
+        newProduct.image = "default-image.png";
+
+        products.push(newProduct);
+
+        const fileTxt = JSON.stringify(products, null, 4);
+
+        fs.writeFileSync(productsFilePath, fileTxt);
+
+        res.redirect("/products");
     },
 
     // Update - Form to edit
