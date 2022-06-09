@@ -1,42 +1,44 @@
-const db = require('../data/db');
-const allproducts = db.getAll();
+const db = require("../data/db");
+const products = db.getAll();
 
 // console.log(allproduct);
 const controller = {
     // Root - Show all products
     index: (req, res) => {
         res.render("products", {
-            allproducts: allproducts
+            products: products,
         });
     },
 
     // Detail - Detail from one product
     detail: (req, res) => {
-        // Do the magic
+        res.render("detail", {
+            product: products.find((p) => p.id == req.params.id),
+        });
     },
 
     // Create - Form to create
     create: (req, res) => {
-        // Do the magic
+        res.render("product-create-form");
     },
 
     // Create -  Method to store
     store: (req, res) => {
-        // Do the magic
+        res.send(req.body);
     },
 
     // Update - Form to edit
     edit: (req, res) => {
-        // Do the magic
+        res.render("product-edit-form");
     },
     // Update - Method to update
     update: (req, res) => {
-        // Do the magic
+        res.send(req.body);
     },
 
     // Delete - Delete one product from DB
     destroy: (req, res) => {
-        // Do the magic
+        res.send(req.body);
     },
 };
 
