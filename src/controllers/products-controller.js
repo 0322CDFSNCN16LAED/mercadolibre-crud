@@ -1,7 +1,6 @@
 const db = require("../data/db");
 const products = db.getAll();
 
-// console.log(allproduct);
 const controller = {
     // Root - Show all products
     index: (req, res) => {
