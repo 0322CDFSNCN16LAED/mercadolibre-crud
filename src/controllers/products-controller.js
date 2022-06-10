@@ -57,7 +57,15 @@ const controller = {
 
     // Delete - Delete one product from DB
     destroy: (req, res) => {
-        res.send(req.body);
+        const filteredProducts = products.filter((p) => {
+            return p.id != req.params.id;
+        });
+
+        const fileTxt = JSON.stringify(filteredProducts, null, 4);
+
+        fs.writeFileSync(productsFilePath, fileTxt);
+
+        res.redirect("/products");
     },
 };
 
