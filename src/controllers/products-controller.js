@@ -48,11 +48,18 @@ const controller = {
 
     // Update - Form to edit
     edit: (req, res) => {
-        res.render("product-edit-form");
+        let id = req.params.id; 
+        let productToEdit= products.find(product => product.id == id); 
+
+        res.render("product-edit-form", {productToEdit: productToEdit});
     },
     // Update - Method to update
     update: (req, res) => {
-        res.send(req.body);
+        const productEdit = products.findIndex((p) => p.id==req.params.id);
+
+        products.splice(productEdit, 1, req.body)
+
+        res.redirect('/products');
     },
 
     // Delete - Delete one product from DB
