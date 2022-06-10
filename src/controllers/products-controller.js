@@ -1,10 +1,5 @@
-const fs = require("fs");
-const path = require("path");
-
 const db = require("../data/db");
 const products = db.getAll();
-
-const productsFilePath = path.join(__dirname, "../data/products-db.json");
 
 const controller = {
     // Root - Show all products
@@ -17,7 +12,7 @@ const controller = {
     // Detail - Detail from one product
     detail: (req, res) => {
         res.render("detail", {
-            product: products.find((p) => p.id == req.params.id),
+            product: db.getOne(req.params.id),
         });
     },
 
@@ -39,27 +34,33 @@ const controller = {
 
         products.push(newProduct);
 
-        const fileTxt = JSON.stringify(products, null, 4);
-
-        fs.writeFileSync(productsFilePath, fileTxt);
+        db.saveAll(products);
 
         res.redirect("/products");
     },
 
     // Update - Form to edit
     edit: (req, res) => {
-        let id = req.params.id; 
-        let productToEdit= products.find(product => product.id == id); 
+        let id = req.params.id;
+        let productToEdit = products.find((product) => product.id == id);
 
-        res.render("product-edit-form", {productToEdit: productToEdit});
+        res.render("product-edit-form", { productToEdit: productToEdit });
     },
     // Update - Method to update
     update: (req, res) => {
-        const productEdit = products.findIndex((p) => p.id==req.params.id);
+        const productIndex = products.findIndex((p) => p.id == req.params.id);
 
-        products.splice(productEdit, 1, req.body)
+        const product = products[productIndex];
 
-        res.redirect('/products');
+        product.name = req.body.name;
+        product.description = req.body.description;
+        product.category = req.body.category;
+        product.price = req.body.price;
+        product.discount = req.body.discount;
+
+        db.saveAll(products);
+
+        res.redirect("/products");
     },
 
     // Delete - Delete one product from DB
@@ -68,9 +69,7 @@ const controller = {
             return p.id != req.params.id;
         });
 
-        const fileTxt = JSON.stringify(filteredProducts, null, 4);
-
-        fs.writeFileSync(productsFilePath, fileTxt);
+        db.saveAll(filteredProducts);
 
         res.redirect("/products");
     },
